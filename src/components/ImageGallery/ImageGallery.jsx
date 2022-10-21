@@ -1,7 +1,7 @@
 import { Bars } from 'react-loader-spinner';
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 import { Component } from 'react';
-import toast from 'react-hot-toast';
+
 import axios from 'axios';
 import css from './ImageGallery.module.css';
 
