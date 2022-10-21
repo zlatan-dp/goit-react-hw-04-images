@@ -1,7 +1,7 @@
 import { Bars } from 'react-loader-spinner';
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 import { Component } from 'react';
-
+import PropTypes from 'prop-types';
 import axios from 'axios';
 import css from './ImageGallery.module.css';
 
@@ -15,25 +15,20 @@ export class ImageGallery extends Component {
     loadMore: false,
   };
   componentDidUpdate(prevProps, prevState) {
-    if (
-      prevProps.query !== this.props.query ||
-      prevProps.page !== this.props.page
-    ) {
-      this.setState({ loading: true });
+    const { query, page, updatePictures } = this.props;
+    if (prevProps.query !== query || prevProps.page !== page) {
+      this.setState({ loading: true, loadMore: false });
       axios
         .get(
-          `/?key=${PIXABAY_KEY}&q=${this.props.query}&page=${this.props.page}&image_type=photo&orientation=horizontal&per_page=12`
+          `/?key=${PIXABAY_KEY}&q=${query}&page=${page}&image_type=photo&orientation=horizontal&per_page=12`
         )
         .then(res => {
           if (res.data.hits.length === 0) {
-            return Promise.reject(
-              new Error(`Нет изображения ${this.props.query}`)
-            );
+            return Promise.reject(new Error(`Нет изображения ${query}`));
           }
-
           this.setState({ error: null });
           const pictures = res.data.hits;
-          this.props.updatePictures(pictures);
+          updatePictures(pictures);
           pictures.length === 12
             ? this.setState({ loadMore: true })
             : this.setState({ loadMore: false });
@@ -44,10 +39,11 @@ export class ImageGallery extends Component {
   }
 
   render() {
+    const { error, loading, loadMore } = this.state;
     return (
       <>
         <ul className={css.ImageGallery}>
-          {!this.state.error ? (
+          {!error ? (
             this.props.pictures.map(
               ({ id, webformatURL, tags, largeImageURL }) => (
                 <li className={css.ImageGalleryItem} key={id}>
@@ -60,10 +56,10 @@ export class ImageGallery extends Component {
               )
             )
           ) : (
-            <p>{this.state.error.message}</p>
+            <p>{error.message}</p>
           )}
         </ul>
-        {this.state.loading && (
+        {loading && (
           <Bars
             height="60"
             width="60"
@@ -76,7 +72,7 @@ export class ImageGallery extends Component {
             visible={true}
           />
         )}
-        {this.state.loadMore && (
+        {loadMore && (
           <button
             className={css.Button}
             type="button"
@@ -89,3 +85,11 @@ export class ImageGallery extends Component {
     );
   }
 }
+
+ImageGallery.propTypes = {
+  loadMore: PropTypes.func,
+  page: PropTypes.number,
+  picctures: PropTypes.arrayOf(PropTypes.shape),
+  query: PropTypes.string,
+  updatePictures: PropTypes.func,
+};

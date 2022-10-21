@@ -1,6 +1,7 @@
 import { Modal } from 'components/Modal/Modal';
 import { Component } from 'react';
 import css from './ImageGalleryItem.module.css';
+import PropTypes from 'prop-types';
 
 export class ImageGalleryItem extends Component {
   state = {
@@ -14,18 +15,19 @@ export class ImageGalleryItem extends Component {
   };
 
   render() {
+    const { url, tags, largeUrl } = this.props;
     return (
       <>
         <img
           className={css.ImageGalleryItemImage}
-          src={this.props.url}
-          alt={this.props.tags}
+          src={url}
+          alt={tags}
           onClick={this.modalToggle}
         />
         {this.state.modal && (
           <Modal
-            largeUrl={this.props.largeUrl}
-            alt={this.props.tags}
+            largeUrl={largeUrl}
+            alt={tags}
             modalToggle={this.modalToggle}
           />
         )}
@@ -33,3 +35,9 @@ export class ImageGalleryItem extends Component {
     );
   }
 }
+
+ImageGalleryItem.propTypes = {
+  largeUrl: PropTypes.string,
+  tags: PropTypes.string,
+  url: PropTypes.string,
+};
