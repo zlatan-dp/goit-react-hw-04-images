@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 // import { Component } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { ImageGallery } from '../ImageGallery/ImageGallery';
@@ -20,9 +20,9 @@ export const App = () => {
     setPage(prevState => prevState + 1);
   };
 
-  const updatePictures = newPictures => {
+  const updatePictures = useCallback(newPictures => {
     setPictures(prevState => [...prevState, ...newPictures]);
-  };
+  }, []);
 
   return (
     <div className={css.App}>

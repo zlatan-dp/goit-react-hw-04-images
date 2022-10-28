@@ -43,7 +43,7 @@ export const ImageGallery = ({
       })
       .catch(error => setError(error))
       .finally(() => setLoading(false));
-  }, [query, page]);
+  }, [query, page, updatePictures]);
 
   return (
     <>
